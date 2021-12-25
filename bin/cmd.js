@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import chalk from 'chalk'
+import os from 'os'
 import cp from 'child_process'
 import createTorrent from 'create-torrent'
 import ecstatic from 'ecstatic'
@@ -80,7 +81,10 @@ const commands = [
 const playerArgs = {
   vlc: ['', '--play-and-exit', '--quiet'],
   iina: ['/Applications/IINA.app/Contents/MacOS/iina-cli', '--keep-running'],
-  mpv: ['mpv', '--really-quiet', '--loop=no'],
+  mpv: [
+    os.platform() === 'darwin' ? '/Applications/mpv.app/Contents/MacOS/mpv' : 'mpv',
+    '--really-quiet', '--loop=no'
+  ],
   mplayer: ['mplayer', '-really-quiet', '-noidx', '-loop', '0'],
   smplayer: ['smplayer', '-close-at-end'],
   omx: [
