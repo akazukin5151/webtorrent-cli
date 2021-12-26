@@ -83,7 +83,8 @@ const playerArgs = {
   iina: ['/Applications/IINA.app/Contents/MacOS/iina-cli', '--keep-running'],
   mpv: [
     os.platform() === 'darwin' ? '/Applications/mpv.app/Contents/MacOS/mpv' : 'mpv',
-    '--really-quiet', '--loop=no'
+    '--loop=no',
+    "--term-playing-msg=='<SyncplayUpdateFile>\\nANS_filename=${filename}\\nANS_length=${=duration:${=length:0}}\\nANS_path=${path}\\n</SyncplayUpdateFile>'"
   ],
   mplayer: ['mplayer', '-really-quiet', '-noidx', '-loop', '0'],
   smplayer: ['smplayer', '-close-at-end'],
@@ -447,7 +448,7 @@ async function runDownload (torrentId) {
     }
 
     function openPlayer (args) {
-      cp.spawn(JSON.stringify(args[0]), args.slice(1), { stdio: 'ignore', shell: true })
+      cp.spawn(JSON.stringify(args[0]), args.slice(1), { stdio: 'inherit', shell: true })
         .on('error', (err) => {
           if (err) {
             const isMpvFalseError = playerName === 'mpv' && err.code === 4
