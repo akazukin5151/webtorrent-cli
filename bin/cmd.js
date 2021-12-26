@@ -18,7 +18,6 @@ import vlcCommand from 'vlc-command'
 import WebTorrent from 'webtorrent'
 import Yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import open from 'open'
 
 const { version: webTorrentCliVersion } = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url)))
 const { version: webTorrentVersion } = JSON.parse(fs.readFileSync(new URL('../node_modules/webtorrent/package.json', import.meta.url)))
@@ -436,7 +435,7 @@ async function runDownload (torrentId) {
         argv.playlist ? openPlayer(playerArgs.vlc.concat(allHrefs)) : openPlayer(playerArgs.vlc.concat(JSON.stringify(href)))
       })
     } else if (argv.iina) {
-      open(`iina://weblink?url=${href}`, { wait: true }).then(playerExit)
+      openPlayer(playerArgs.iina.concat(JSON.stringify(href)))
     } else if (argv.mplayer) {
       argv.playlist ? openPlayer(playerArgs.mplayer.concat(allHrefs)) : openPlayer(playerArgs.mplayer.concat(JSON.stringify(href)))
     } else if (argv.mpv) {
