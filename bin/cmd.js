@@ -83,7 +83,7 @@ const playerArgs = {
   mpv: [
     os.platform() === 'darwin' ? '/Applications/mpv.app/Contents/MacOS/mpv' : 'mpv',
     '--loop=no',
-    "--term-playing-msg=='<SyncplayUpdateFile>\\nANS_filename=${filename}\\nANS_length=${=duration:${=length:0}}\\nANS_path=${path}\\n</SyncplayUpdateFile>'"
+    "--term-playing-msg='<SyncplayUpdateFile>\\nANS_filename=${filename}\\nANS_length=${=duration:${=length:0}}\\nANS_path=${path}\\n</SyncplayUpdateFile>'"
   ],
   mplayer: ['mplayer', '-really-quiet', '-noidx', '-loop', '0'],
   smplayer: ['smplayer', '-close-at-end'],
