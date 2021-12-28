@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import chalk from 'chalk'
-import os from 'os'
 import cp from 'child_process'
 import createTorrent from 'create-torrent'
 import ecstatic from 'ecstatic'
@@ -18,6 +17,7 @@ import vlcCommand from 'vlc-command'
 import WebTorrent from 'webtorrent'
 import Yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import open from 'open'
 import ipc from 'node-ipc'
 
 const { version: webTorrentCliVersion } = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url)))
@@ -82,11 +82,7 @@ const commands = [
 const playerArgs = {
   vlc: ['', '--play-and-exit', '--quiet'],
   iina: ['/Applications/IINA.app/Contents/MacOS/iina-cli', '--keep-running'],
-  mpv: [
-    os.platform() === 'darwin' ? '/Applications/mpv.app/Contents/MacOS/mpv' : 'mpv',
-    '--loop=no',
-    "--term-playing-msg='<SyncplayUpdateFile>\\nANS_filename=${filename}\\nANS_length=${=duration:${=length:0}}\\nANS_path=${path}\\n</SyncplayUpdateFile>'"
-  ],
+  mpv: ['mpv', '--loop=no'],
   mplayer: ['mplayer', '-really-quiet', '-noidx', '-loop', '0'],
   smplayer: ['smplayer', '-close-at-end'],
   omx: [
@@ -446,7 +442,7 @@ async function runDownload (torrentId) {
         argv.playlist ? openPlayer(playerArgs.vlc.concat(allHrefs)) : openPlayer(playerArgs.vlc.concat(JSON.stringify(href)))
       })
     } else if (argv.iina) {
-      openPlayer(playerArgs.iina.concat(JSON.stringify(href)))
+      open(`iina://weblink?url=${href}`, { wait: true }).then(playerExit)
     } else if (argv.mplayer) {
       argv.playlist ? openPlayer(playerArgs.mplayer.concat(allHrefs)) : openPlayer(playerArgs.mplayer.concat(JSON.stringify(href)))
     } else if (argv.mpv) {
