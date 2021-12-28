@@ -18,6 +18,7 @@ import vlcCommand from 'vlc-command'
 import WebTorrent from 'webtorrent'
 import Yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import ipc from 'node-ipc'
 
 const { version: webTorrentCliVersion } = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url)))
 const { version: webTorrentVersion } = JSON.parse(fs.readFileSync(new URL('../node_modules/webtorrent/package.json', import.meta.url)))
@@ -37,7 +38,8 @@ const options = {
     iina: { desc: 'IINA', type: 'boolean' },
     smplayer: { desc: 'SMPlayer', type: 'boolean' },
     xbmc: { desc: 'XBMC', type: 'boolean' },
-    stdout: { desc: 'Standard out (implies --quiet)', type: 'boolean' }
+    stdout: { desc: 'Standard out (implies --quiet)', type: 'boolean' },
+    ipc: { desc: 'Stream to localhost and send address to IPC', type: 'string', requiresArg: true }
   },
   simple: {
     o: { alias: 'out', desc: 'Set download destination', type: 'string', requiresArg: true },
@@ -426,6 +428,15 @@ async function runDownload (torrentId) {
       torrent.files[index].createReadStream().pipe(process.stdout)
     }
 
+    if (argv.ipc) {
+      ipc.connectTo('myid', argv.ipc, () => {
+        ipc.of.myid.on('connect', () => ipc.of.myid.emit('href', JSON.stringify(href)))
+        ipc.of.myid.on('disconnect', () => {
+            ipc.disconnect('myid')
+            gracefulExit()
+        })
+      })
+    }
     if (argv.vlc) {
       vlcCommand((err, vlcCmd) => {
         if (err) {
